@@ -143,17 +143,20 @@ void motors_control_task(void *args) {
                 is_forward_r = true;
             }
 
+            Vl = Vx;
+            Vr = Vx;
+
             if (data.y < LOWER_ZERO_THRESHHOLD) {
                 Vy = (ABS(data.y - LOWER_ZERO_THRESHHOLD) * 255) / LOWER_ZERO_THRESHHOLD;
                 
-                Vl = Vx - Vy / 2;
+                Vl -= Vy / 2;
                 
                 if (Vl < 0) {
                     Vl = -1 * Vl;
                     is_forward_l = !is_forward_l;
                 }
 
-                Vr = Vx + Vy / 2;
+                Vr += Vy / 2;
 
                 if (Vr > 255) {
                     Vr = 255;
@@ -161,14 +164,14 @@ void motors_control_task(void *args) {
             } else if (data.y > UPPER_ZERO_THRESHHOLD) {
                 Vy = ((data.y - UPPER_ZERO_THRESHHOLD) * 255) / (4095 - UPPER_ZERO_THRESHHOLD);
 
-                Vr = Vx - Vy / 2;
+                Vr -= Vy / 2;
 
                 if (Vr < 0) {
                     Vr = -1 * Vr;
                     is_forward_r = !is_forward_r;
                 }
 
-                Vl = Vx + Vy / 2;
+                Vl += Vy / 2;
 
                 if (Vl > 255) {
                     Vl = 255;
